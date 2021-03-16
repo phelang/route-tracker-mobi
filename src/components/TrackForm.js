@@ -1,45 +1,138 @@
-import React, { useContext } from 'react'
-import { Input, Button } from 'react-native-elements'
+import React, { useState, useContext } from 'react'
+import { Input } from 'react-native-elements'
+import { SafeAreaView } from 'react-navigation'
 import Spacer from './Spacer'
 import { Context as LocationContext } from '../context/LocationContext'
 import useSaveTrack from '../hooks/useSaveTrack'
+import {
+  Alert,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
+} from 'react-native'
 
-const TrackForm = () => {
-    const {
-        state: { name, recording, locations },
-        startRecording,
-        stopRecording,
-        changeName,
-    } = useContext(LocationContext)
+export default function App() {
+  const {
+    state: { name, recording, locations },
+    startRecording,
+    stopRecording,
+    changeName,
+  } = useContext(LocationContext)
 
-    const [saveTrack] = useSaveTrack()
+  const [saveTrack] = useSaveTrack()
 
-    return (
-        <>
-            <Spacer>
-                <Input
-                    value={name}
-                    onChangeText={changeName}
-                    placeholder='Enter track name'
-                />
-            </Spacer>
-            <Spacer>
-                {recording ? (
-                    <Button title='Stop' onPress={stopRecording} />
-                ) : (
-                    <Button title='Start Recording' onPress={startRecording} />
-                )}
-            </Spacer>
-            <Spacer>
-                {!recording && locations.length ? (
-                    <Button
-                        title='Save Recording'
-                        onPress={() => saveTrack()}
-                    />
-                ) : null}
-            </Spacer>
-        </>
-    )
+  const [modalVisible, setModalVisible] = useState(false)
+  return (
+    <SafeAreaView forceInset={{ top: 'always' }}>
+      <View style={styles.centeredView}>
+        <Modal
+          animationType='slide'
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.')
+          }}
+        >
+          <View style={styles.contentView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Save Recording</Text>
+
+              <Input
+                value={name}
+                onChangeText={changeName}
+                placeholder='Enter track name'
+              />
+
+              <TouchableHighlight
+                style={{ ...styles.openButton, backgroundColor: '#00ff40' }}
+                onPress={() => {
+                  setModalVisible(!modalVisible)
+                  saveTrack()
+                }}
+              >
+                <Text style={styles.textStyle}>Save</Text>
+              </TouchableHighlight>
+
+              <Spacer />
+              <TouchableHighlight
+                style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                onPress={() => {
+                  setModalVisible(!modalVisible)
+                }}
+              >
+                <Text style={styles.textStyle}>Close</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+
+        {recording ? (
+          <TouchableHighlight
+            style={styles.openButton}
+            onPress={() => {
+              setModalVisible(true)
+              stopRecording()
+            }}
+          >
+            <Text style={styles.textStyle}>Stop</Text>
+          </TouchableHighlight>
+        ) : (
+          <TouchableHighlight
+            style={styles.openButton}
+            onPress={() => {
+              startRecording()
+            }}
+          >
+            <Text style={styles.textStyle}>Start Recording</Text>
+          </TouchableHighlight>
+        )}
+      </View>
+    </SafeAreaView>
+  )
 }
 
-export default TrackForm
+const styles = StyleSheet.create({
+  centeredView: {
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    marginTop: 22,
+  },
+  contentView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 'auto',
+  },
+  modalView: {
+    height: '70%',
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: '#F194FF',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+})
