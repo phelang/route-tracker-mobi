@@ -13,6 +13,9 @@ import { Context as LocationContext } from '../context/LocationContext'
 import { useGetLocation, useLocation } from '../hooks/useLocation'
 import TrackForm from '../components/TrackForm'
 import ErrorModal from '../components/ReloadModal'
+import { FontAwesome5 } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const TrackCreateScreen = ({ isFocused }) => {
   const [reloadLocation, setReloadLocation] = useState(false)
@@ -75,6 +78,7 @@ const TrackCreateScreen = ({ isFocused }) => {
 
 TrackCreateScreen.navigationOptions = {
   title: 'Add Track',
+  tabBarIcon: <AntDesign name='pluscircleo' size={24} color='black' />,
 }
 
 const styles = StyleSheet.create({

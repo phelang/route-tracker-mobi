@@ -3,6 +3,7 @@ import { SafeAreaView } from 'react-navigation'
 import { View, StyleSheet } from 'react-native'
 import { Text, Button } from 'react-native-elements'
 import { Context as AuthContext } from '../context/AuthContext'
+import { EvilIcons } from '@expo/vector-icons'
 
 const AccountScreen = () => {
   const { signOut } = useContext(AuthContext)
@@ -26,6 +27,10 @@ const AccountScreen = () => {
       </View>
     </SafeAreaView>
   )
+}
+
+AccountScreen.navigationOptions = {
+  tabBarIcon: <EvilIcons name='gear' size={24} color='black' />,
 }
 
 const styles = StyleSheet.create({

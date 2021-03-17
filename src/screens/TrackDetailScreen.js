@@ -1,8 +1,10 @@
 import React, { useContext } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import { Context as TrackContext } from '../context/TrackContext'
-import MapView, { Polyline } from 'react-native-maps'
+import MapView, { Polyline, Marker } from 'react-native-maps'
+import pin from '../../assets/pin.png'
+import { AntDesign } from '@expo/vector-icons'
 
 const TrackDetailScreen = ({ navigation }) => {
   const { state } = useContext(TrackContext)
@@ -10,10 +12,18 @@ const TrackDetailScreen = ({ navigation }) => {
 
   const track = state.find((t) => t._id === _id)
   const initialCoords = track.locations[0].coords
+  const lastCoords = track.locations[track.locations.length - 1].coords
 
   return (
-    <SafeAreaView style={styles.container} forceInset={{ top: 15 }}>
-      <Text style={{ fontSize: 48 }}>{track.name}</Text>
+    <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
+      <View style={styles.myTracks}>
+        <Text style={styles.titleStyle}>{track.name}</Text>
+
+        <TouchableOpacity style={styles.iconStyle} onPress={() => {}}>
+          <AntDesign name='delete' size={24} color='black' />
+        </TouchableOpacity>
+      </View>
+
       <MapView
         initialRegion={{
           longitudeDelta: 0.001,
@@ -22,7 +32,24 @@ const TrackDetailScreen = ({ navigation }) => {
         }}
         style={styles.map}
       >
-        <Polyline coordinates={track.locations.map((loc) => loc.coords)} />
+        <Marker
+          coordinate={{
+            ...initialCoords,
+          }}
+          image={pin}
+        />
+        <Marker
+          coordinate={{
+            ...lastCoords,
+          }}
+          image={pin}
+        />
+        <Polyline
+          coordinates={track.locations.map((loc) => loc.coords)}
+          strokeWidth={4}
+          strokeColor='rgb(255,223,0)' //''
+          geodesic={true}
+        />
       </MapView>
     </SafeAreaView>
   )
@@ -39,7 +66,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    height: 300,
+    height: '100%',
+    width: '100%',
+  },
+  myTracks: {
+    flexDirection: 'row',
+    color: 'gray',
+    elevation: 5,
+    borderRadius: 10,
+    padding: 15,
+  },
+  titleStyle: {
+    fontSize: 30,
+    paddingLeft: 15,
+  },
+
+  iconStyle: {
+    alignSelf: 'center',
+    position: 'absolute',
+    right: 0,
+    paddingRight: 15,
   },
 })
 

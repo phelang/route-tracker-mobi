@@ -19,8 +19,8 @@ const Map = ({ initialCoords, currentLocation, locations, recording }) => {
           <Circle
             center={currentLocation.coords}
             radius={25}
-            strokeColor='rgb(255,223,0, 0.3)' //rgba(158, 159, 255, 1.0)
-            fillColor=' 	rgb(255,215,0, 1.0)' //  rgba(158, 159, 255,0.3)
+            strokeColor='rgba(158, 159, 255, 1.0)'
+            fillColor='rgba(158, 159, 255,0.3)'
           />
         ) : null}
 
@@ -34,8 +34,8 @@ const Map = ({ initialCoords, currentLocation, locations, recording }) => {
 
         <Polyline
           coordinates={locations.map((loc) => loc.coords)}
-          strokeWidth={7}
-          strokeColor='red'
+          strokeWidth={4}
+          strokeColor='rgb(255,223,0)' //''
           geodesic={true}
         />
       </MapView>
