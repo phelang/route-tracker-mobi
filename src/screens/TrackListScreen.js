@@ -9,7 +9,8 @@ const TrackListScreen = ({ navigation }) => {
   const { state, fetchTracks } = useContext(TrackContext)
 
   return (
-    <SafeAreaView style={styles.container} forceInset={{ top: 15 }}>
+    <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
+      <Text style={styles.titleStyle}>Tracks</Text>
       <NavigationEvents
         onWillFocus={() => {
           fetchTracks()
@@ -30,7 +31,9 @@ const TrackListScreen = ({ navigation }) => {
             >
               <ListItem key={item._id} bottomDivider>
                 <ListItem.Content>
-                  <ListItem.Title>{item.name}</ListItem.Title>
+                  <ListItem.Title style={styles.itemStyle}>
+                    {item.name}
+                  </ListItem.Title>
                 </ListItem.Content>
                 <ListItem.Chevron />
               </ListItem>
@@ -42,13 +45,28 @@ const TrackListScreen = ({ navigation }) => {
   )
 }
 
-TrackListScreen.navigationOptions = {
-  title: 'Tracks',
+TrackListScreen.navigationOptions = () => {
+  return {
+    header: null,
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  titleStyle: {
+    textAlign: 'center',
+    margin: 5,
+    color: 'gray',
+    elevation: 5,
+    borderRadius: 10,
+    fontSize: 30,
+  },
+  itemStyle: {
+    color: 'gray',
+    fontFamily: 'sans-serif-light',
+    fontSize: 20,
   },
 })
 

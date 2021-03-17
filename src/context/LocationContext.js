@@ -1,6 +1,14 @@
 import { AsyncStorage, RecyclerViewBackedScrollView } from 'react-native'
 import createDataContext from './createDataContext'
 
+const INITIAL_STATE = {
+  name: '',
+  recording: false,
+  initialCoords: null,
+  locations: [],
+  currentLocation: null,
+}
+
 const locationReducer = (state, action) => {
   switch (action.type) {
     case 'add_current_location':
@@ -14,14 +22,7 @@ const locationReducer = (state, action) => {
     case 'change_name':
       return { ...state, name: action.payload }
     case 'reset':
-      return {
-        ...state,
-        name: '',
-        locations: [],
-        initialCoords: null,
-        currentLocation: null,
-        recording: false,
-      }
+      return INITIAL_STATE
     case 'set_initial_region':
       return { ...state, initialCoords: action.payload }
     default:
@@ -65,11 +66,5 @@ export const { Context, Provider } = createDataContext(
     changeName,
     reset,
   },
-  {
-    name: null,
-    recording: false,
-    initialCoords: null,
-    locations: [],
-    currentLocation: null,
-  }
+  INITIAL_STATE
 )

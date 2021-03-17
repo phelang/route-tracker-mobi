@@ -1,9 +1,7 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { Input } from 'react-native-elements'
 import { SafeAreaView } from 'react-navigation'
 import Spacer from './Spacer'
-import { Context as LocationContext } from '../context/LocationContext'
-import useSaveTrack from '../hooks/useSaveTrack'
 import {
   Alert,
   Modal,
@@ -13,18 +11,9 @@ import {
   View,
 } from 'react-native'
 
-export default function App() {
-  const {
-    state: { name, recording, locations },
-    startRecording,
-    stopRecording,
-    changeName,
-    reset,
-  } = useContext(LocationContext)
+export default function ReloadModal({ showModal, reload }) {
+  const [modalVisible, setModalVisible] = useState(showModal)
 
-  const [saveTrack] = useSaveTrack()
-
-  const [modalVisible, setModalVisible] = useState(false)
   return (
     <SafeAreaView forceInset={{ top: 'always' }}>
       <View style={styles.centeredView}>
@@ -38,29 +27,28 @@ export default function App() {
         >
           <View style={styles.contentView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Save Recording</Text>
-
-              <Input
-                value={name}
-                onChangeText={changeName}
-                placeholder='Enter track name'
-              />
+              <Text style={styles.modalText}>
+                Location provider is unavailable. Please reload to enable
+                location services ...
+              </Text>
 
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: '#00ff40' }}
                 onPress={() => {
+                  console.log('reloading modal about to be called')
+                  reload(true)
                   setModalVisible(!modalVisible)
-                  saveTrack()
                 }}
               >
-                <Text style={styles.textStyle}>Save</Text>
+                <Text style={styles.textStyle}>Reload</Text>
               </TouchableHighlight>
 
               <Spacer />
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
                 onPress={() => {
-                  reset()
+                  console.log('cancel any reload process')
+                  reload(false)
                   setModalVisible(!modalVisible)
                 }}
               >
@@ -69,29 +57,6 @@ export default function App() {
             </View>
           </View>
         </Modal>
-
-        <View style={styles.centeredView}>
-          {recording ? (
-            <TouchableHighlight
-              style={styles.openButton}
-              onPress={() => {
-                stopRecording()
-                setModalVisible(true)
-              }}
-            >
-              <Text style={styles.textStyle}>Stop</Text>
-            </TouchableHighlight>
-          ) : (
-            <TouchableHighlight
-              style={styles.openButton}
-              onPress={() => {
-                startRecording()
-              }}
-            >
-              <Text style={styles.textStyle}>Start Recording</Text>
-            </TouchableHighlight>
-          )}
-        </View>
       </View>
     </SafeAreaView>
   )
@@ -99,10 +64,9 @@ export default function App() {
 
 const styles = StyleSheet.create({
   centeredView: {
-    marginTop: 0,
-    margin: 'auto',
     // justifyContent: 'center',
     // alignItems: 'center',
+    marginTop: 22,
   },
   contentView: {
     justifyContent: 'center',
@@ -123,13 +87,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 4,
+    elevation: 5,
   },
   openButton: {
     backgroundColor: '#F194FF',
     borderRadius: 20,
     padding: 10,
-    elevation: 5,
+    elevation: 2,
   },
   textStyle: {
     color: 'white',

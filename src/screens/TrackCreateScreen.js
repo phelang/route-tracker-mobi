@@ -4,28 +4,28 @@ import {
   SafeAreaView,
   withNavigationFocus,
   NavigationEvents,
+  TabRouter,
 } from 'react-navigation'
-import { StyleSheet, ActivityIndicator } from 'react-native'
+import { StyleSheet, ActivityIndicator, View } from 'react-native'
 import { Text } from 'react-native-elements'
 import Map from '../components/Map'
 import { Context as LocationContext } from '../context/LocationContext'
-import { getLocation, useLocation } from '../hooks/useLocation'
+import { useGetLocation, useLocation } from '../hooks/useLocation'
 import TrackForm from '../components/TrackForm'
+import ErrorModal from '../components/ReloadModal'
 
 const TrackCreateScreen = ({ isFocused }) => {
+  const [reloadLocation, setReloadLocation] = useState(false)
+
   const {
-    state: { initialCoords, recording, locations },
+    state: { initialCoords, recording, currentLocation, locations },
     setInitialCoords,
     addLocation,
   } = useContext(LocationContext)
 
-  const callbackInitialCoords = useCallback(
-    (location) => {
-      console.log('location ', location)
-      setInitialCoords(location)
-    },
-    [isFocused]
-  )
+  const callbackInitialCoords = useCallback((location) => {
+    setInitialCoords(location)
+  }, [])
 
   const callbackRecodingCoords = useCallback(
     (location) => {
@@ -34,25 +34,41 @@ const TrackCreateScreen = ({ isFocused }) => {
     [recording]
   )
 
-  const [errorOnLoadCoords] = getLocation(isFocused, callbackInitialCoords)
+  // do callback when isFocused, recording or request to reload
+  const [errorOnLoadCoords] = useGetLocation(
+    isFocused,
+    reloadLocation,
+    callbackInitialCoords
+  )
+
+  // do callback as long recording is true
   const [errorRecordingCoords] = useLocation(recording, callbackRecodingCoords)
 
   const map = initialCoords ? (
-    <Map />
+    <Map
+      initialCoords={initialCoords}
+      currentLocation={currentLocation}
+      locations={locations}
+      recording={recording}
+    />
   ) : (
     <ActivityIndicator size='large' style={{ marginTop: 200 }} />
   )
-  useEffect(() => {}, [isFocused])
+
+  let onError = errorOnLoadCoords ? (
+    <ErrorModal showModal={true} reload={setReloadLocation} />
+  ) : null
 
   return (
-    <SafeAreaView forceInset={{ top: 'always' }}>
-      <Text h3>Create a Track</Text>
+    <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
+      <Text h4 style={styles.titleStyle}>
+        Create a Track
+      </Text>
+      {onError}
       {map}
-      {errorOnLoadCoords || errorRecordingCoords ? (
-        <Text>Please enable location services</Text>
-      ) : null}
-
-      <TrackForm />
+      <View style={styles.form}>
+        <TrackForm />
+      </View>
     </SafeAreaView>
   )
 }
@@ -62,8 +78,13 @@ TrackCreateScreen.navigationOptions = {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: {},
+  titleStyle: {
+    textAlign: 'center',
+    margin: 5,
+    color: 'gray',
+    elevation: 5,
+    borderRadius: 10,
   },
 })
 

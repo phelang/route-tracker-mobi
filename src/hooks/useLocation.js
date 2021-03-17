@@ -7,13 +7,20 @@ import {
 } from 'expo-location'
 import { call } from 'react-native-reanimated'
 
-export const getLocation = (shouldGetInitial, callback) => {
-  const [errorOnLoadCoords, setErrorOnLoadCoords] = useState(null)
+export const useGetLocation = (shouldGetInitial, reloadLocation, callback) => {
+  const [errorOnLoadCoords, setErrorOnLoadCoords] = useState(false)
 
   useEffect(() => {
-    let location = null
+    console.log('')
+    console.log(
+      'onload ',
+      shouldGetInitial,
+      ' ; should reload ',
+      reloadLocation
+    )
+    console.log('')
+    let location
     const findLocation = async () => {
-      console.log('Find location is callbackRecodingCoords')
       try {
         const { granted } = await requestPermissionsAsync()
         if (!granted) {
@@ -22,11 +29,10 @@ export const getLocation = (shouldGetInitial, callback) => {
         let location = await getCurrentPositionAsync({})
         callback(location)
       } catch (e) {
-        setErrorOnLoadCoords(e)
+        setErrorOnLoadCoords(true)
       }
     }
-
-    if (shouldGetInitial) {
+    if (shouldGetInitial || reloadLocation) {
       findLocation()
     }
 
@@ -35,7 +41,7 @@ export const getLocation = (shouldGetInitial, callback) => {
         location = null
       }
     }
-  }, [shouldGetInitial])
+  }, [shouldGetInitial, reloadLocation])
   return [errorOnLoadCoords]
 }
 
@@ -62,6 +68,7 @@ export const useLocation = (shouldTrack, callback) => {
           callback
         )
       } catch (e) {
+        console.log('recording error ', e)
         setError(e)
       }
     }

@@ -4,14 +4,7 @@ import MapView, { Polyline, Circle, Marker } from 'react-native-maps'
 import { Context as LocationContext } from '../context/LocationContext'
 import pin from '../../assets/pin.png'
 
-const Map = () => {
-  const { state } = useContext(LocationContext)
-  const { initialCoords, currentLocation, locations } = state
-
-  console.log('loading should be null ', locations.length)
-  console.log('current location ', currentLocation)
-  console.log('initial location ', initialCoords)
-
+const Map = ({ initialCoords, currentLocation, locations, recording }) => {
   return (
     <>
       <MapView
@@ -26,8 +19,8 @@ const Map = () => {
           <Circle
             center={currentLocation.coords}
             radius={25}
-            strokeColor='rgba(158, 159, 255, 1.0)'
-            fillColor='rgba(158, 159, 255,0.3)'
+            strokeColor='rgb(255,223,0, 0.3)' //rgba(158, 159, 255, 1.0)
+            fillColor=' 	rgb(255,215,0, 1.0)' //  rgba(158, 159, 255,0.3)
           />
         ) : null}
 
@@ -39,7 +32,12 @@ const Map = () => {
           image={pin}
         />
 
-        <Polyline coordinates={locations.map((loc) => loc.coords)} />
+        <Polyline
+          coordinates={locations.map((loc) => loc.coords)}
+          strokeWidth={7}
+          strokeColor='red'
+          geodesic={true}
+        />
       </MapView>
     </>
   )
@@ -47,8 +45,9 @@ const Map = () => {
 
 const styles = StyleSheet.create({
   map: {
-    height: 300,
-    shadowOpacity: 0.5,
+    // flex: 1,
+    height: '80%',
+    shadowOpacity: 0.3,
   },
 })
 
