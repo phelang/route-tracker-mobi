@@ -23,8 +23,8 @@ const Map = ({ initialCoords, currentLocation, locations, recording }) => {
         currentLocation
           ? {
               ...currentLocation.coords,
-              latitudeDelta: 0.03,
-              longitudeDelta: 0.02,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
             }
           : null
       }
