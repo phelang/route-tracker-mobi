@@ -17,7 +17,6 @@ const TrackListScreen = ({ navigation }) => {
     fetchTracks,
   } = useContext(TrackContext)
 
-  console.log('Is loading ', tracks.length)
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
       <Text style={styles.titleStyle}>Tracks</Text>
@@ -26,6 +25,12 @@ const TrackListScreen = ({ navigation }) => {
           fetchTracks()
         }}
       />
+      {tracks.length === 0 && !loading ? (
+        <Text style={styles.textStyle}>
+          You have no tracks, start creating ...
+        </Text>
+      ) : null}
+
       {!loading ? (
         <FlatList
           data={tracks}
@@ -80,6 +85,12 @@ const styles = StyleSheet.create({
     color: 'gray',
     fontFamily: 'sans-serif-light',
     fontSize: 20,
+  },
+  textStyle: {
+    textAlign: 'center',
+    margin: 30,
+    fontSize: 15,
+    color: 'gray',
   },
 })
 

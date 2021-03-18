@@ -4,6 +4,7 @@ import { View, StyleSheet } from 'react-native'
 import { Text, Button } from 'react-native-elements'
 import { Context as AuthContext } from '../context/AuthContext'
 import { EvilIcons } from '@expo/vector-icons'
+import trackerApi from '../api/tracker'
 
 const AccountScreen = () => {
   const { signOut, deleteAccount } = useContext(AuthContext)

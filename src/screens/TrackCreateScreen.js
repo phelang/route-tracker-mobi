@@ -1,4 +1,4 @@
-import '../_mockLocation'
+// import '../_mockLocation'
 import React, { useContext, useCallback, useState, useEffect } from 'react'
 import {
   SafeAreaView,
@@ -19,6 +19,13 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const TrackCreateScreen = ({ isFocused }) => {
   const [reloadLocation, setReloadLocation] = useState(false)
+  const [exit, setExit] = useState(false)
+
+  useEffect(() => {
+    if (isFocused) {
+      setExit(false)
+    }
+  }, [isFocused])
 
   const {
     state: { initialCoords, recording, currentLocation, locations },
@@ -26,9 +33,12 @@ const TrackCreateScreen = ({ isFocused }) => {
     addLocation,
   } = useContext(LocationContext)
 
-  const callbackInitialCoords = useCallback((location) => {
-    setInitialCoords(location)
-  }, [])
+  const callbackInitialCoords = useCallback(
+    (location) => {
+      setInitialCoords(location)
+    },
+    [reloadLocation]
+  )
 
   const callbackRecodingCoords = useCallback(
     (location) => {
@@ -54,12 +64,6 @@ const TrackCreateScreen = ({ isFocused }) => {
       locations={locations}
       recording={recording}
     />
-  ) : (
-    <ActivityIndicator size='large' style={{ marginTop: 200 }} />
-  )
-
-  let onError = errorOnLoadCoords ? (
-    <ErrorModal showModal={true} reload={setReloadLocation} />
   ) : null
 
   return (
@@ -67,11 +71,30 @@ const TrackCreateScreen = ({ isFocused }) => {
       <Text h4 style={styles.titleStyle}>
         Create a Track
       </Text>
-      {onError}
-      {map}
-      <View style={styles.form}>
-        <TrackForm />
-      </View>
+      {!exit ? (
+        <>
+          {map}
+          {!initialCoords && !errorOnLoadCoords ? (
+            <ActivityIndicator size='large' style={{ marginTop: 200 }} />
+          ) : null}
+          {initialCoords ? <TrackForm /> : null}
+          <ErrorModal
+            setExit={setExit}
+            showModal={errorOnLoadCoords}
+            reload={setReloadLocation}
+          />
+        </>
+      ) : (
+        <>
+          <Text style={styles.exitTextStyle}>
+            Could not load location services, make sure you are connected to the
+            internet and allow location services
+          </Text>
+          <Text style={styles.exitTextStyle}>
+            Restart the application or Reload ...
+          </Text>
+        </>
+      )}
     </SafeAreaView>
   )
 }
@@ -82,13 +105,21 @@ TrackCreateScreen.navigationOptions = {
 }
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+  },
+
   titleStyle: {
     textAlign: 'center',
     margin: 5,
     color: 'gray',
     elevation: 5,
     borderRadius: 10,
+  },
+  exitTextStyle: {
+    marginTop: 40,
+    color: 'gray',
+    textAlign: 'center',
   },
 })
 

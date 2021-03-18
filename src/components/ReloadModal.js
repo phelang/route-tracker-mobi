@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input } from 'react-native-elements'
 import { SafeAreaView } from 'react-navigation'
 import Spacer from './Spacer'
@@ -11,8 +11,18 @@ import {
   View,
 } from 'react-native'
 
-export default function ReloadModal({ showModal, reload }) {
+export default function ReloadModal({ showModal, reload, setExit }) {
   const [modalVisible, setModalVisible] = useState(showModal)
+
+  useEffect(() => {
+    // for ome reason the onload default initialization does not work as
+    // explicit initialization at any time the compoent reloads
+    if (showModal) {
+      setModalVisible(true)
+    } else {
+      setModalVisible(false)
+    }
+  }, [showModal])
 
   return (
     <SafeAreaView forceInset={{ top: 'always' }}>
@@ -20,7 +30,7 @@ export default function ReloadModal({ showModal, reload }) {
         <Modal
           animationType='slide'
           transparent={true}
-          visible={modalVisible}
+          visible={modalVisible || showModal}
           onRequestClose={() => {
             Alert.alert('Modal has been closed.')
           }}
@@ -35,9 +45,11 @@ export default function ReloadModal({ showModal, reload }) {
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: '#00ff40' }}
                 onPress={() => {
-                  console.log('reloading modal about to be called')
-                  reload(true)
-                  setModalVisible(!modalVisible)
+                  // reload useLocation hook
+                  // this is try bu the only way that useLocation is recalled is because the reload is inverted to give the impression that reload state has change
+                  // this will force useLocation hook to invoke itself
+                  reload((prev) => !prev)
+                  setModalVisible(true)
                 }}
               >
                 <Text style={styles.textStyle}>Reload</Text>
@@ -47,12 +59,13 @@ export default function ReloadModal({ showModal, reload }) {
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
                 onPress={() => {
-                  console.log('cancel any reload process')
+                  // exit application reset
                   reload(false)
-                  setModalVisible(!modalVisible)
+                  setModalVisible(false)
+                  setExit(true)
                 }}
               >
-                <Text style={styles.textStyle}>Close</Text>
+                <Text style={styles.textStyle}>Exit</Text>
               </TouchableHighlight>
             </View>
           </View>

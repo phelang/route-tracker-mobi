@@ -11,30 +11,26 @@ export const useGetLocation = (shouldGetInitial, reloadLocation, callback) => {
   const [errorOnLoadCoords, setErrorOnLoadCoords] = useState(false)
 
   useEffect(() => {
-    console.log('')
-    console.log(
-      'onload ',
-      shouldGetInitial,
-      ' ; should reload ',
-      reloadLocation
-    )
-    console.log('')
     let location
     const findLocation = async () => {
       try {
         const { granted } = await requestPermissionsAsync()
         if (!granted) {
+          setErrorOnLoadCoords(true)
           throw new Error('Permission to access location was denied')
         }
+
         let location = await getCurrentPositionAsync({})
+        if (!location) {
+          setErrorOnLoadCoords(true)
+        }
         callback(location)
       } catch (e) {
         setErrorOnLoadCoords(true)
       }
     }
-    if (shouldGetInitial || reloadLocation) {
-      findLocation()
-    }
+
+    findLocation()
 
     return () => {
       if (location) {
@@ -68,7 +64,6 @@ export const useLocation = (shouldTrack, callback) => {
           callback
         )
       } catch (e) {
-        console.log('recording error ', e)
         setError(e)
       }
     }

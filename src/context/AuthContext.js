@@ -57,7 +57,6 @@ const tryLocalSignIn = (dispatch) => async () => {
     dispatch({ type: 'signin', payload: token })
     navigate('mainFlow')
   } else {
-    console.log('Redirect signup')
     navigate('SignIn')
   }
 }
@@ -88,7 +87,6 @@ const signIn = (dispatch) => async ({ email, password }) => {
     dispatch({ type: 'signin', payload: response.data.token })
     navigate('TrackList')
   } catch (err) {
-    console.log(err)
     dispatch({
       type: 'add_error',
       payload: 'Invalid email or password ',
@@ -105,12 +103,12 @@ const signOut = (dispatch) => async () => {
 const deleteAccount = (dispatch) => async () => {
   try {
     const token = await AsyncStorage.getItem('token')
-    console.log('ACCOUNT DELETED ', token)
-    // dispatch({
-    //   type: 'delete_account',
-    // })
-    // await AsyncStorage.clear()
-    // navigate('ResolveAuth')
+    dispatch({
+      type: 'delete_account',
+    })
+    const response = await trackerApi.post('/deleteaccount')
+    await AsyncStorage.clear()
+    navigate('ResolveAuth')
   } catch (err) {}
 }
 

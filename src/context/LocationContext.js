@@ -48,7 +48,6 @@ const changeName = (dispatch) => (name) => {
 }
 
 const reset = (dispatch) => () => {
-  console.log('reset called ')
   dispatch({ type: 'reset' })
 }
 
