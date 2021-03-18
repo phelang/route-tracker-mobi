@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
+import {
+  Text,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native'
 import MapView, { Polyline, Circle, Marker } from 'react-native-maps'
 import { Context as LocationContext } from '../context/LocationContext'
 import pin from '../../assets/pin.png'
@@ -13,6 +19,15 @@ const Map = ({ initialCoords, currentLocation, locations, recording }) => {
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
       }}
+      region={
+        currentLocation
+          ? {
+              ...currentLocation.coords,
+              latitudeDelta: 0.03,
+              longitudeDelta: 0.02,
+            }
+          : null
+      }
     >
       {currentLocation ? (
         <Circle
