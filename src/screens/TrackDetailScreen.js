@@ -1,5 +1,11 @@
 import React, { useContext } from 'react'
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import { Context as TrackContext } from '../context/TrackContext'
 import MapView, { Polyline, Marker } from 'react-native-maps'
@@ -7,10 +13,13 @@ import pin from '../../assets/pin.png'
 import { AntDesign } from '@expo/vector-icons'
 
 const TrackDetailScreen = ({ navigation }) => {
-  const { state } = useContext(TrackContext)
+  const {
+    state: { tracks, loading },
+    deleteTrack,
+  } = useContext(TrackContext)
   const _id = navigation.getParam('_id')
 
-  const track = state.find((t) => t._id === _id)
+  const track = tracks.find((t) => t._id === _id)
   const initialCoords = track.locations[0].coords
   const lastCoords = track.locations[track.locations.length - 1].coords
 
@@ -19,8 +28,15 @@ const TrackDetailScreen = ({ navigation }) => {
       <View style={styles.myTracks}>
         <Text style={styles.titleStyle}>{track.name}</Text>
 
-        <TouchableOpacity style={styles.iconStyle} onPress={() => {}}>
-          <AntDesign name='delete' size={24} color='black' />
+        <TouchableOpacity
+          style={styles.iconStyle}
+          onPress={() => deleteTrack(_id)}
+        >
+          {loading ? (
+            <ActivityIndicator size='large' />
+          ) : (
+            <AntDesign name='delete' size={24} color='black' />
+          )}
         </TouchableOpacity>
       </View>
 

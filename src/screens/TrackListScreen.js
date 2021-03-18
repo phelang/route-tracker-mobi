@@ -1,13 +1,23 @@
 import React, { useContext } from 'react'
 import { SafeAreaView } from 'react-navigation'
-import { StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native'
+import {
+  StyleSheet,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native'
 import { ListItem } from 'react-native-elements'
 import { NavigationEvents } from 'react-navigation'
 import { Context as TrackContext } from '../context/TrackContext'
 
 const TrackListScreen = ({ navigation }) => {
-  const { state, fetchTracks } = useContext(TrackContext)
+  const {
+    state: { loading, tracks },
+    fetchTracks,
+  } = useContext(TrackContext)
 
+  console.log('Is loading ', tracks.length)
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
       <Text style={styles.titleStyle}>Tracks</Text>
@@ -16,31 +26,34 @@ const TrackListScreen = ({ navigation }) => {
           fetchTracks()
         }}
       />
-      {/* <Text style={{ fontSize: 48 }}>TrackListScreen</Text> */}
-      <FlatList
-        data={state}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('TrackDetail', {
-                  _id: item._id,
-                })
-              }
-            >
-              <ListItem key={item._id} bottomDivider>
-                <ListItem.Content>
-                  <ListItem.Title style={styles.itemStyle}>
-                    {item.name}
-                  </ListItem.Title>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            </TouchableOpacity>
-          )
-        }}
-      />
+      {!loading ? (
+        <FlatList
+          data={tracks}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('TrackDetail', {
+                    _id: item._id,
+                  })
+                }
+              >
+                <ListItem key={item._id} bottomDivider>
+                  <ListItem.Content>
+                    <ListItem.Title style={styles.itemStyle}>
+                      {item.name}
+                    </ListItem.Title>
+                  </ListItem.Content>
+                  <ListItem.Chevron />
+                </ListItem>
+              </TouchableOpacity>
+            )
+          }}
+        />
+      ) : (
+        <ActivityIndicator size='large' style={{ marginTop: 200 }} />
+      )}
     </SafeAreaView>
   )
 }

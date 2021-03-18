@@ -6,26 +6,24 @@ import { Context as AuthContext } from '../context/AuthContext'
 import { EvilIcons } from '@expo/vector-icons'
 
 const AccountScreen = () => {
-  const { signOut } = useContext(AuthContext)
+  const { signOut, deleteAccount } = useContext(AuthContext)
 
   return (
-    <SafeAreaView forceInset={{ top: 'always' }}>
-      <View style={styles.alignCenter}>
-        <Text h3 style={styles.textStyle}>
-          Account Screen
-        </Text>
-        <Button
-          buttonStyle={styles.buttonStyle}
-          onPress={signOut}
-          title={'Sign Out'}
-        />
-        <Button
-          buttonStyle={styles.buttonStyle2}
-          onPress={signOut}
-          title={'Delete Account'}
-        />
-      </View>
-    </SafeAreaView>
+    <View style={styles.alignCenter}>
+      <Text h3 style={styles.textStyle}>
+        Account Screen
+      </Text>
+      <Button
+        buttonStyle={styles.buttonStyle}
+        onPress={signOut}
+        title={'Sign Out'}
+      />
+      <Button
+        buttonStyle={styles.buttonStyle2}
+        onPress={deleteAccount}
+        title={'Delete Account'}
+      />
+    </View>
   )
 }
 
@@ -34,13 +32,6 @@ AccountScreen.navigationOptions = {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    marginBottom: 200,
-    margin: 20,
-    position: 'relative',
-  },
   alignCenter: {
     flex: 1,
     marginTop: '30%',
