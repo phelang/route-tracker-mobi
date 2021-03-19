@@ -25,6 +25,10 @@
         "googleMaps": {
           "apiKey": "AIzaSyClMFcV7WDMgcikOYgRmqKqfN6_bgCdO2Y"
         }
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFF"
       }
     }
   }
