@@ -13,9 +13,18 @@ import { Context as TrackContext } from '../context/TrackContext'
 
 const TrackListScreen = ({ navigation }) => {
   const {
-    state: { loading, tracks },
+    state: { loading, tracks, error },
     fetchTracks,
   } = useContext(TrackContext)
+
+  let isError =
+    tracks.length === 0 && !loading ? (
+      <Text style={styles.textStyle}>
+        You have no tracks, start creating ...
+      </Text>
+    ) : null
+
+  let systemError = <Text style={styles.textStyle}>{error}</Text>
 
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
@@ -25,12 +34,8 @@ const TrackListScreen = ({ navigation }) => {
           fetchTracks()
         }}
       />
-      {tracks.length === 0 && !loading ? (
-        <Text style={styles.textStyle}>
-          You have no tracks, start creating ...
-        </Text>
-      ) : null}
 
+      {!error ? isError : systemError}
       {!loading ? (
         <FlatList
           data={tracks}
@@ -41,6 +46,7 @@ const TrackListScreen = ({ navigation }) => {
                 onPress={() =>
                   navigation.navigate('TrackDetail', {
                     _id: item._id,
+                    tracks: tracks,
                   })
                 }
               >

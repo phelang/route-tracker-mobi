@@ -49,7 +49,7 @@ export default function ReloadModal({ showModal, reload, setExit }) {
                   // this is try bu the only way that useLocation is recalled is because the reload is inverted to give the impression that reload state has change
                   // this will force useLocation hook to invoke itself
                   reload((prev) => !prev)
-                  setModalVisible(true)
+                  setModalVisible(false)
                 }}
               >
                 <Text style={styles.textStyle}>Reload</Text>

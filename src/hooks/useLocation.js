@@ -20,12 +20,14 @@ export const useGetLocation = (shouldGetInitial, reloadLocation, callback) => {
           throw new Error('Permission to access location was denied')
         }
 
-        let location = await getCurrentPositionAsync({})
+        location = await getCurrentPositionAsync({})
         if (!location) {
+          console.log('no location ', location, ' ?value')
           setErrorOnLoadCoords(true)
         }
         callback(location)
       } catch (e) {
+        console.log('system error location ', location)
         setErrorOnLoadCoords(true)
       }
     }

@@ -14,14 +14,20 @@ import { AntDesign } from '@expo/vector-icons'
 
 const TrackDetailScreen = ({ navigation }) => {
   const {
-    state: { tracks, loading },
+    state: { loading },
     deleteTrack,
   } = useContext(TrackContext)
+
   const _id = navigation.getParam('_id')
+  const tracks = navigation.getParam('tracks')
 
   const track = tracks.find((t) => t._id === _id)
-  const initialCoords = track.locations[0].coords
-  const lastCoords = track.locations[track.locations.length - 1].coords
+  const initialCoords =
+    track.locations.length > 0 ? track.locations[0].coords : null
+  const lastCoords =
+    track.locations.length > 1
+      ? track.locations[track.locations.length - 1].coords
+      : null
 
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
@@ -40,33 +46,41 @@ const TrackDetailScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <MapView
-        initialRegion={{
-          longitudeDelta: 0.001,
-          latitudeDelta: 0.01,
-          ...initialCoords,
-        }}
-        style={styles.map}
-      >
-        <Marker
-          coordinate={{
+      {initialCoords ? (
+        <MapView
+          initialRegion={{
+            longitudeDelta: 0.001,
+            latitudeDelta: 0.01,
             ...initialCoords,
           }}
-          image={pin}
-        />
-        <Marker
-          coordinate={{
-            ...lastCoords,
-          }}
-          image={pin}
-        />
-        <Polyline
-          coordinates={track.locations.map((loc) => loc.coords)}
-          strokeWidth={4}
-          strokeColor='rgb(255,223,0)' //''
-          geodesic={true}
-        />
-      </MapView>
+          style={styles.map}
+        >
+          <Marker
+            coordinate={{
+              ...initialCoords,
+            }}
+            image={pin}
+          />
+          {lastCoords ? (
+            <Marker
+              coordinate={{
+                ...lastCoords,
+              }}
+              image={pin}
+            />
+          ) : null}
+          <Polyline
+            coordinates={track.locations.map((loc) => loc.coords)}
+            strokeWidth={4}
+            strokeColor='rgb(255,223,0)' //''
+            geodesic={true}
+          />
+        </MapView>
+      ) : (
+        <Text style={styles.textStyle}>
+          This recording is too short ... no coordinates to show
+        </Text>
+      )}
     </SafeAreaView>
   )
 }
@@ -102,6 +116,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     paddingRight: 15,
+  },
+  textStyle: {
+    textAlign: 'center',
+    margin: 30,
+    fontSize: 15,
+    color: 'gray',
   },
 })
 

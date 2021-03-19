@@ -23,6 +23,7 @@ const trackListFlow = createStackNavigator({
 trackListFlow.navigationOptions = {
   title: 'My Tracks',
   tabBarIcon: <FontAwesome5 name='list-alt' size={24} color='black' />,
+  backgroundColor: 'black',
 }
 
 const switchNavigator = createSwitchNavigator({

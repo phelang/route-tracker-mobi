@@ -19,7 +19,7 @@ export default function App() {
     startRecording,
     stopRecording,
     changeName,
-    reset,
+    cancelRecordingReset,
   } = useContext(LocationContext)
 
   const [saveTrack] = useSaveTrack()
@@ -60,8 +60,8 @@ export default function App() {
               <TouchableHighlight
                 style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
                 onPress={() => {
-                  reset()
-                  setModalVisible(!modalVisible)
+                  cancelRecordingReset()
+                  setModalVisible(false)
                 }}
               >
                 <Text style={styles.textStyle}>Close</Text>
@@ -73,7 +73,7 @@ export default function App() {
         <View style={styles.centeredView}>
           {recording ? (
             <TouchableHighlight
-              style={styles.openButton}
+              style={styles.closeButton}
               onPress={() => {
                 stopRecording()
                 setModalVisible(true)
@@ -127,6 +127,13 @@ const styles = StyleSheet.create({
   },
   openButton: {
     backgroundColor: '#2196F3',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 5,
+  },
+
+  closeButton: {
+    backgroundColor: '#F194FF',
     borderRadius: 20,
     padding: 10,
     elevation: 5,

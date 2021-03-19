@@ -23,6 +23,17 @@ const locationReducer = (state, action) => {
       return { ...state, name: action.payload }
     case 'reset':
       return INITIAL_STATE
+    case 'cancel_recording_reset':
+      // don't reset initial coords because the map screen is still active
+      // user only canceled recording and did not save any or the coords
+      return {
+        ...state,
+        name: '',
+        recording: false,
+        locations: [],
+        currentLocation: null,
+      }
+
     case 'set_initial_region':
       return { ...state, initialCoords: action.payload }
     default:
@@ -51,6 +62,10 @@ const reset = (dispatch) => () => {
   dispatch({ type: 'reset' })
 }
 
+const cancelRecordingReset = (dispatch) => () => {
+  dispatch({ type: 'cancel_recording_reset' })
+}
+
 const setInitialCoords = (dispatch) => (initialCoords) => {
   dispatch({ type: 'set_initial_region', payload: initialCoords })
 }
@@ -64,6 +79,7 @@ export const { Context, Provider } = createDataContext(
     addLocation,
     changeName,
     reset,
+    cancelRecordingReset,
   },
   INITIAL_STATE
 )

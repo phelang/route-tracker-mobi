@@ -48,14 +48,14 @@ const TrackCreateScreen = ({ isFocused }) => {
   )
 
   // do callback when isFocused, recording or request to reload
-  const [errorOnLoadCoords] = useGetLocation(
+  let [errorOnLoadCoords] = useGetLocation(
     isFocused,
     reloadLocation,
     callbackInitialCoords
   )
 
   // do callback as long recording is true
-  const [errorRecordingCoords] = useLocation(recording, callbackRecodingCoords)
+  let [errorRecordingCoords] = useLocation(recording, callbackRecodingCoords)
 
   const map = initialCoords ? (
     <Map
@@ -66,6 +66,8 @@ const TrackCreateScreen = ({ isFocused }) => {
     />
   ) : null
 
+  console.log('initial coords ', initialCoords)
+  console.log('error ', errorOnLoadCoords)
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
       <Text h4 style={styles.titleStyle}>
@@ -80,7 +82,7 @@ const TrackCreateScreen = ({ isFocused }) => {
           {initialCoords ? <TrackForm /> : null}
           <ErrorModal
             setExit={setExit}
-            showModal={errorOnLoadCoords}
+            showModal={!initialCoords && errorOnLoadCoords}
             reload={setReloadLocation}
           />
         </>
