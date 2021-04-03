@@ -20,14 +20,14 @@ export const useGetLocation = (shouldGetInitial, reloadLocation, callback) => {
           throw new Error('Permission to access location was denied')
         }
 
-        location = await getCurrentPositionAsync({})
+        location = await getCurrentPositionAsync({
+          accuracy: Accuracy.Highest,
+        })
         if (!location) {
-          console.log('no location ', location, ' ?value')
           setErrorOnLoadCoords(true)
         }
         callback(location)
       } catch (e) {
-        console.log('system error location ', location)
         setErrorOnLoadCoords(true)
       }
     }
@@ -58,8 +58,8 @@ export const useLocation = (shouldTrack, callback) => {
 
         subscriber = await watchPositionAsync(
           {
-            accuracy: Accuracy.BestForNavigation,
-            timeInterval: 1000,
+            accuracy: Accuracy.Highest,
+            timeInterval: 2000,
             distanceInterval: 10,
           },
           // return a callback location

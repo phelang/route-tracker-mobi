@@ -66,8 +66,6 @@ const TrackCreateScreen = ({ isFocused }) => {
     />
   ) : null
 
-  console.log('initial coords ', initialCoords)
-  console.log('error ', errorOnLoadCoords)
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always' }}>
       <Text h4 style={styles.titleStyle}>
